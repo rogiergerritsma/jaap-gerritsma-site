@@ -52,18 +52,45 @@ img { max-width: 100%; height: auto; }
 
 /* kop */
 .kop {
-  max-width: var(--breed); margin: 0 auto; padding: 1.5rem 1.25rem;
-  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .75rem 2rem;
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(247, 244, 238, .9);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px);
   border-bottom: 1px solid var(--lijn);
 }
-.merk {
-  font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: .8rem;
-  letter-spacing: .22em; text-transform: uppercase; color: var(--inkt); text-decoration: none;
+.kop-binnen {
+  max-width: var(--breed); margin: 0 auto; padding: 1.1rem 1.25rem 1rem;
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem 2rem; flex-wrap: wrap;
 }
-.kop nav { display: flex; flex-wrap: wrap; gap: .35rem 1.25rem; }
-.kop nav a { color: var(--inkt-zacht); text-decoration: none; font-size: 1.02rem; }
-.kop nav a:hover, .kop nav a[aria-current] { color: var(--inkt); }
-.kop nav a[aria-current] { text-decoration: underline; text-decoration-color: var(--groen); text-underline-offset: .35em; }
+.merk { display: flex; align-items: baseline; gap: .8rem; color: var(--inkt); text-decoration: none; }
+.merk:hover { color: var(--inkt); }
+.merk-naam { font-size: 2.05rem; line-height: 1; font-weight: 500; letter-spacing: -.012em; }
+.merk-jaren {
+  font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: .68rem;
+  letter-spacing: .18em; color: var(--inkt-zacht); white-space: nowrap;
+}
+.kop nav { display: flex; gap: 1.4rem; }
+.kop nav a {
+  color: var(--inkt-zacht); text-decoration: none; font-size: 1.05rem; white-space: nowrap;
+  padding: .2rem 0; border-bottom: 1px solid transparent;
+}
+.kop nav a:hover { color: var(--inkt); }
+.kop nav a[aria-current] { color: var(--inkt); border-bottom-color: var(--groen); }
+@media (max-width: 760px) {
+  .kop-binnen { padding: .85rem 1.25rem .55rem; }
+  .merk-naam { font-size: 1.5rem; }
+  .kop nav {
+    width: calc(100% + 2.5rem); margin: 0 -1.25rem; padding: 0 1.25rem .25rem;
+    overflow-x: auto; scrollbar-width: none; gap: 1.2rem;
+    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
+  }
+  .kop nav::-webkit-scrollbar { display: none; }
+  .kop nav a { font-size: 1rem; }
+}
+html { scroll-padding-top: 7rem; }
+
+.radio audio { margin-bottom: 1.2rem; }
+.radio .label { margin: .4rem 0 .3rem; }
 
 main { max-width: var(--breed); margin: 0 auto; padding: 0 1.25rem 4rem; }
 

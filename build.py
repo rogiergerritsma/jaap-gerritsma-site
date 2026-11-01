@@ -118,8 +118,10 @@ def layout(title, content, path, desc='', bodyclass=''):
 <body class="{bodyclass}">
 <a class="skip" href="#inhoud">Naar de inhoud</a>
 <header class="kop">
-  <a class="merk" href="/">Jaap Gerritsma</a>
-  <nav aria-label="Hoofdmenu">{navhtml}</nav>
+  <div class="kop-binnen">
+    <a class="merk" href="/"><span class="merk-naam">Jaap Gerritsma</span><span class="merk-jaren">1942 – 2025</span></a>
+    <nav aria-label="Hoofdmenu">{navhtml}</nav>
+  </div>
 </header>
 <main id="inhoud">
 {content}
@@ -189,7 +191,7 @@ def boek_kaart(slug, titel, jaar, soort):
             f'<span class="label">{jaar} · {soort}</span><span class="boek-titel">{titel}</span></a>')
 
 
-boeken_grid = '<div class="boeken">' + ''.join(boek_kaart(*b) for b in BOEKEN) + '</div>'
+boeken_grid = '<div class="boeken">' + ''.join(boek_kaart(*b) for b in reversed(BOEKEN)) + '</div>'
 
 
 def post_lijst(ps, kort=False):
@@ -207,6 +209,22 @@ over = pages.pop('over-jaap', None) or next(p for p in pages.values() if p['path
 pages = {k: v for k, v in pages.items() if v['path'] != '/'}
 portret = first_img(over['body'])
 over_body = re.sub(r'<figure[^>]*>(?:(?!</figure>).)*' + re.escape(portret) + r'.*?</figure>', '', over['body'], count=1, flags=re.S) if portret else over['body']
+# de losse 'Kijk/Luister ... hier'-regels vervangen door een eigen blok met de radiofragmenten
+over_body = re.sub(r'<hr/>\s*(?:<p>(?:Kijk|Luister)[^\n]*?</p>\s*)+', '<hr/>\n', over_body)
+media = pages.get('in-de-media')
+RADIO_1 = '/wp-content/uploads/2015/01/L1-Radio-leest-voor-uit-Opa-vertelt-fantastisch-verhalen.mp3'
+RADIO_2 = '/wp-content/uploads/2015/01/L1-Radio-leest-voor-uit-Opa-vertelt-fantastisch-verhalen-2.mp3'
+radio_blok = f'''<section class="blok smal">
+  <h2 class="sectie"><span class="label">Op de radio</span></h2>
+  <div class="tekst radio">
+    <p>In januari 2015 ging Radio L1 met Jaap in gesprek over <a href="/opa-vertelt/">Opa vertelt</a>, moderne sprookjes met een wijze les.</p>
+    <p class="label">Deel 1</p>
+    <audio controls preload="none" src="{RADIO_1}"></audio>
+    <p class="label">Deel 2</p>
+    <audio controls preload="none" src="{RADIO_2}"></audio>
+    <p class="meer"><a href="/in-de-media/">Meer in de media, ook over Ontstemde liefde</a></p>
+  </div>
+</section>'''
 home = f'''
 <section class="held">
   <div class="held-tekst">
@@ -225,7 +243,8 @@ home = f'''
   <h2 class="sectie"><span class="label">Laatst geschreven</span></h2>
   {post_lijst(posts[:5])}
   <p class="meer"><a href="/blog/">Alle {len(posts)} verhalen en columns</a></p>
-</section>'''
+</section>
+{radio_blok}'''
 write('/', layout('Over Jaap', home, '/', bodyclass='home'))
 
 # ---------- boeken ----------
