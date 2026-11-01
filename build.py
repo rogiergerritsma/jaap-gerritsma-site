@@ -290,3 +290,22 @@ if UPL.exists():
         shutil.copy2(src, dst)
 (OUT.parent / 'used_uploads.json').write_text(json.dumps(sorted(used_files), indent=1))
 print(f'{len(pages)} pagina\'s, {len(posts)} berichten, {len(used_files)} beeldverwijzingen')
+
+# ---------- relatieve paden: werkt zowel op jaapgerritsma.nl als op een tijdelijk adres ----------
+import os
+for f in OUT.rglob('*.html'):
+    if f.name == '404.html':
+        continue
+    rel = os.path.relpath(OUT, f.parent).replace(os.sep, '/')
+    pre = '' if rel == '.' else rel + '/'
+    s = f.read_text(encoding='utf-8')
+    def fix(m):
+        attr, path = m.group(1), m.group(2)
+        if path.startswith('//'):
+            return m.group(0)
+        target = path.lstrip('/')
+        if target == '' or target.endswith('/'):
+            target += 'index.html'
+        return f'{attr}="{pre}{target}"'
+    s = re.sub(r'(href|src)="(/[^"]*)"', fix, s)
+    f.write_text(s, encoding='utf-8')
