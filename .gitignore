@@ -1,0 +1,4 @@
+# bronbestanden blijven lokaal: de WordPress-export bevat e-mailadressen en IP-adressen van reageerders
+src/
+zip_in/
+used_uploads.json
