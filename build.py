@@ -70,6 +70,7 @@ def clean(body):
     body = re.sub(r'\sclass="([^"]*)"', keep_class, body)
     # interne links en beelden relatief maken
     body = re.sub(r'https?://(?:www\.)?jaapgerritsma\.nl', '', body)
+    body = re.sub(r'Google Sites: <a href="https://sites\.google\.com/gerritsma\.net/problem-based-learning/?">[^<]*</a>', 'online als e-book: <a href="/pbl/">jaapgerritsma.nl/pbl</a>', body)
     body = re.sub(r'(/wp-content/uploads/[^"]+)\.heic', r'\1.jpg', body)  # browsers tonen geen HEIC
     body = body.replace('href="/over-jaap/"', 'href="/"').replace('/sprookjes/het-vliegende-laatje/', '/het-vliegende-laatje/')  # oude adressen
     for f in re.findall(r'/wp-content/uploads/[^"\'\s)<>]+', body):
@@ -288,12 +289,15 @@ for slug, p in pages.items():
 {comments_html(p["comments"])}'''
     write(p['path'], layout(p['title'], doc, p['path'], excerpt(p['body'], 25)))
 
+# ---------- e-book PBL ----------
+exec((HERE / 'pbl_section.py').read_text(encoding='utf-8'))
+
 # ---------- 404, sitemap, overige ----------
 (OUT / '404.html').write_text(layout('Niet gevonden', '''<article class="tekst">
 <header class="titel"><h1>Deze pagina bestaat niet meer</h1></header>
 <p>Misschien is het adres veranderd. Begin bij <a href="/">Over Jaap</a> of kijk in het <a href="/blog/">overzicht van alle verhalen</a>.</p>
 </article>''', '/404/'), encoding='utf-8')
-urls = ['/', '/boeken/', '/blog/'] + [p['path'] for p in pages.values()] + [p['path'] for p in posts]
+urls = ['/', '/boeken/', '/blog/'] + [p['path'] for p in pages.values()] + [p['path'] for p in posts] + pbl_paths
 (OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                  + ''.join(f'<url><loc>{BASE}{u}</loc></url>\n' for u in urls) + '</urlset>\n', encoding='utf-8')
 (OUT / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n')
