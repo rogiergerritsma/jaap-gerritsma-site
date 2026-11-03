@@ -15,6 +15,10 @@ HERE = Path(__file__).parent
 NS = {'wp': 'http://wordpress.org/export/1.2/',
       'content': 'http://purl.org/rss/1.0/modules/content/'}
 BASE = 'https://jaapgerritsma.nl'
+# GitHub Pages cannot send response headers, so the CSP and referrer policy go in a <meta> tag.
+# (frame-ancestors, HSTS and X-Frame-Options are not possible this way; they need a proxy in front.)
+# YouTube embeds (youtube-nocookie.com) are the only external resource.
+CSP = "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
 MAANDEN = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli',
            'augustus', 'september', 'oktober', 'november', 'december']
 
@@ -106,6 +110,8 @@ def layout(title, content, path, desc='', bodyclass=''):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{CSP}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>{html.escape(full_title)}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{BASE}{path}">

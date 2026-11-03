@@ -6,6 +6,7 @@ Overgezet van WordPress (Savvii) naar GitHub Pages in november 2026.
 - `docs/` is de site zoals hij online staat (GitHub Pages: branch `main`, map `/docs`).
 - Alle oude adressen uit WordPress zijn behouden, ook `/wp-content/uploads/...`.
 - Geen cookies, geen analytics. Lettertypen (Newsreader, IBM Plex Mono) staan in de site zelf.
+- Elke pagina heeft een Content-Security-Policy en referrer-policy als `<meta>`-tag (GitHub Pages kan geen headers sturen). Alleen YouTube-embeds (youtube-nocookie.com) mogen van buiten komen; zie `CSP` in `build.py`.
 
 ## Opnieuw opbouwen
 
